@@ -21,11 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.mua_ban_xe_cu.API.ApiClient;
+import com.example.mua_ban_xe_cu.API.ApiService;
 import com.example.mua_ban_xe_cu.Model.Response.PostCarResponse;
 import com.example.mua_ban_xe_cu.Model.Response.UploadResponse;
 import com.example.mua_ban_xe_cu.R;
-import com.example.mua_ban_xe_cu.API.ApiClient;
-import com.example.mua_ban_xe_cu.API.ApiService;
+import com.example.mua_ban_xe_cu.API.AppConfig;
 import com.example.mua_ban_xe_cu.database.Car;
 
 import java.io.File;
@@ -36,6 +37,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostCarActivity extends AppCompatActivity {
 
@@ -46,7 +49,6 @@ public class PostCarActivity extends AppCompatActivity {
 
     private ApiService apiService;
     private static final int REQUEST_CODE_READ_MEDIA_IMAGES = 1;
-
     private ActivityResultLauncher<Intent> photoPickerLauncher;
 
     @Override
@@ -78,17 +80,15 @@ public class PostCarActivity extends AppCompatActivity {
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCarType.setAdapter(typeAdapter);
 
-        // Handle the Photo Picker for Android 14 and later
+        // Xử lý chọn ảnh từ thư viện
         photoPickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 selectedImageUri = result.getData().getData();
             }
         });
 
-        // Kiểm tra quyền khi người dùng bấm chọn ảnh
         btnUploadImage.setOnClickListener(v -> openGallery());
 
-        // Xử lý sự kiện khi người dùng bấm Đăng bài
         btnPost.setOnClickListener(v -> {
             String carName = editCarName.getText().toString();
             String carYear = editCarYear.getText().toString();
@@ -96,11 +96,9 @@ public class PostCarActivity extends AppCompatActivity {
 
             if (selectedImageUri != null && !TextUtils.isEmpty(carName)
                     && !TextUtils.isEmpty(carYear) && !TextUtils.isEmpty(carPrice)) {
-                // Lấy dữ liệu từ Spinner
                 String selectedBrand = spinnerCarBrand.getSelectedItem().toString();
                 String selectedType = spinnerCarType.getSelectedItem().toString();
 
-                // Tiến hành tải ảnh lên server và lưu thông tin bài đăng
                 uploadImageToServer(selectedImageUri, carName, carYear, carPrice, selectedBrand, selectedType);
             } else {
                 Toast.makeText(this, "Vui lòng điền đầy đủ thông tin và chọn ảnh", Toast.LENGTH_SHORT).show();
@@ -108,7 +106,6 @@ public class PostCarActivity extends AppCompatActivity {
         });
     }
 
-    // Mở thư viện ảnh cho các phiên bản Android cũ hơn và kiểm tra quyền
     private void openGallery() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE_READ_MEDIA_IMAGES);
@@ -130,7 +127,6 @@ public class PostCarActivity extends AppCompatActivity {
         }
     }
 
-    // Hàm để tải ảnh lên server
     private void uploadImageToServer(Uri imageUri, String carName, String carYear, String carPrice, String brand, String type) {
         try {
             Log.d("UploadImage", "Bắt đầu tải ảnh lên server");
@@ -155,17 +151,16 @@ public class PostCarActivity extends AppCompatActivity {
                         imageUrl = imageUrl.replace("http://car-service:5002", "http://localhost:5002");
                         Log.d("UploadImage", "Tải ảnh thành công. URL ảnh: " + imageUrl);
 
-
-// Cập nhật lại URL ảnh vào đối tượng xe
+                        // Lấy thông tin người dùng từ SharedPreferences
                         SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                         String userEmail = preferences.getString("user_email", "user@example.com");
                         String phoneNumber = preferences.getString("phoneNumber", "Không xác định");
                         String userProvince = preferences.getString("user_province", "Không xác định");
+                        String posterName = preferences.getString("user_name", "Không xác định");
 
-                        // Chú ý: Constructor của Car yêu cầu 10 tham số (id, carName, brand, carYear, carPrice, userProvince, imageUrl, userEmail, phoneNumber, type)
-                        // Nếu id chưa có, ta truyền chuỗi rỗng.
-                        // Cập nhật lại URL ảnh vào đối tượng xe
-                        Car car = new Car("", carName, brand, carYear, carPrice, userProvince, imageUrl, userEmail, phoneNumber, type);
+                        // Tạo đối tượng Car với posterName được set
+                        Car car = new Car("", carName, brand, carYear, carPrice,
+                                userProvince, imageUrl, posterName, userEmail, phoneNumber, type);
                         postCarToServer(car);
                         Log.d("PostCar", "Dữ liệu gửi lên server: " + car.toString());
                     } else {
@@ -192,11 +187,8 @@ public class PostCarActivity extends AppCompatActivity {
             public void onResponse(Call<PostCarResponse> call, Response<PostCarResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     PostCarResponse resp = response.body();
-                    // Giả sử server trả về carId trong resp.carId
-                    String newCarId = resp.getCarId(); // Bạn cần đảm bảo lớp PostCarResponse có getter cho carId
+                    String newCarId = resp.getCarId();
                     Log.d("PostCar", "Bài đăng thành công: " + resp.toString());
-                    Log.d("PostCar", "Dữ liệu gửi lên server: " + car.toString());
-                    // Nếu bạn muốn cập nhật đối tượng Car với id mới từ server:
                     car.setId(newCarId);
                     Toast.makeText(PostCarActivity.this, "Bài đăng thành công! Car ID: " + newCarId, Toast.LENGTH_SHORT).show();
                     finish();
@@ -213,7 +205,6 @@ public class PostCarActivity extends AppCompatActivity {
         });
     }
 
-    // Hàm lấy đường dẫn thực tế từ URI
     private String getRealPathFromURI(Uri uri) {
         String path = null;
         if (uri.getScheme().equals("content")) {

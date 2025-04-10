@@ -9,12 +9,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Ví dụ các trường chỉnh sửa thông tin tài khoản -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Họ và tên" />
+
         <EditText
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username" />
+            android:hint="Tên đăng nhập" />
 
         <EditText
             android:id="@+id/etEmail"
@@ -23,12 +28,16 @@
             android:hint="Email" />
 
         <EditText
-            android:id="@+id/etPhone"
+            android:id="@+id/etProvince"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Số điện thoại" />
+            android:hint="Tỉnh Đồng Nai/Thành phố Hồ Chí Minh" />
 
-        <!-- Thêm các trường khác nếu cần -->
+        <EditText
+            android:id="@+id/etFacebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Facebook (link)" />
 
         <Button
             android:id="@+id/btnSave"
@@ -36,6 +45,5 @@
             android:layout_height="wrap_content"
             android:text="Lưu thay đổi"
             android:layout_marginTop="16dp" />
-
     </LinearLayout>
 </ScrollView>

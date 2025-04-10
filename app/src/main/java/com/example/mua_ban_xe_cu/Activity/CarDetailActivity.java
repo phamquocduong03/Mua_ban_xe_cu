@@ -31,14 +31,12 @@ public class CarDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_detail);
 
-        // Khởi tạo Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(AppConfig.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(ApiService.class);
 
-        // Ánh xạ View
         ImageView imageCar = findViewById(R.id.imageCar);
         TextView textCarName = findViewById(R.id.textCarName);
         TextView textCarPrice = findViewById(R.id.textCarPrice);
@@ -50,11 +48,11 @@ public class CarDetailActivity extends AppCompatActivity {
         Button btnEditPost = findViewById(R.id.btnEditPost);
         Button btnDeletePost = findViewById(R.id.btnDeletePost);
 
-        // Nhận dữ liệu từ Intent
+        // Nhận dữ liệu từ Intent, bao gồm posterName đã lưu khi đăng bài
         String name = getIntent().getStringExtra("name");
         String price = getIntent().getStringExtra("price");
         String imageUrl = getIntent().getStringExtra("imageUrl");
-        String owner = getIntent().getStringExtra("owner");
+        String posterName = getIntent().getStringExtra("posterName");
         String address = getIntent().getStringExtra("address");
         String phone = getIntent().getStringExtra("phoneNumber");
         String email = getIntent().getStringExtra("email");
@@ -64,10 +62,10 @@ public class CarDetailActivity extends AppCompatActivity {
         String type = getIntent().getStringExtra("type");
         isOwner = getIntent().getBooleanExtra("isOwner", false);
 
-        // Hiển thị thông tin
         textCarName.setText("Tên xe: " + name);
         textCarPrice.setText("Giá bán: " + price);
-        textCarOwner.setText("Người đăng: " + owner);
+        // Hiển thị luôn posterName – nếu không có thì fallback sang email
+        textCarOwner.setText("Người đăng: " + (posterName != null && !posterName.isEmpty() ? posterName : email));
         textCarAddress.setText("Địa chỉ: " + address);
         textCarPhone.setText("Số điện thoại: " + phone);
         textCarEmail.setText("Email: " + email);
@@ -79,7 +77,6 @@ public class CarDetailActivity extends AppCompatActivity {
             Glide.with(this).load(R.drawable.ic_car_placeholder).into(imageCar);
         }
 
-        // Ẩn/hiện các nút theo quyền sở hữu
         if (isOwner) {
             buttonMessageSeller.setVisibility(View.GONE);
             btnEditPost.setVisibility(View.VISIBLE);
@@ -90,7 +87,6 @@ public class CarDetailActivity extends AppCompatActivity {
             btnDeletePost.setVisibility(View.GONE);
         }
 
-        // Nhắn tin với người bán
         buttonMessageSeller.setOnClickListener(v -> {
             Intent intent = new Intent(CarDetailActivity.this, ChatActivity.class);
             intent.putExtra("receiver", email);
@@ -98,26 +94,23 @@ public class CarDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // ✅ CHỈNH SỬA BÀI ĐĂNG
         btnEditPost.setOnClickListener(v -> {
             Intent intent = new Intent(CarDetailActivity.this, EditCarActivity.class);
             intent.putExtra("carId", carId);
             intent.putExtra("name", name);
             intent.putExtra("price", price);
             intent.putExtra("imageUrl", imageUrl);
-            intent.putExtra("owner", owner);
             intent.putExtra("address", address);
             intent.putExtra("phoneNumber", phone);
             intent.putExtra("email", email);
             intent.putExtra("brand", brand);
             intent.putExtra("year", year);
             intent.putExtra("type", type);
-            intent.putExtra("createdBy", email);
-            intent.putExtra("province", address);
+            // Chuyển thêm posterName nếu cần hiển thị trong EditCarActivity (nếu có)
+            intent.putExtra("posterName", posterName);
             startActivity(intent);
         });
 
-        // ✅ XÓA BÀI ĐĂNG
         btnDeletePost.setOnClickListener(v -> {
             Car carToDelete = new Car();
             carToDelete.setImageUrl(imageUrl); // Xóa dựa theo imageUrl

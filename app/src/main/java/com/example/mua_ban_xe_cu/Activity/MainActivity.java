@@ -54,15 +54,11 @@ public class MainActivity extends AppCompatActivity {
         btnHome = findViewById(R.id.btnHome);
         btnPostCar = findViewById(R.id.btnPostCar);
         btnAccount = findViewById(R.id.btnAccount);
-        btnMessages = findViewById(R.id.btnMessages); // Nút mới cho phần tin nhắn
+        btnMessages = findViewById(R.id.btnMessages);
 
-        // Cấu hình Retrofit
-        apiService = ApiClient.getClient().create(ApiService.class);
-
-        // LayoutManager cho RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Kiểm tra người dùng đã đăng nhập chưa
+        // Kiểm tra thông tin đăng nhập từ SharedPreferences
         SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         String token = preferences.getString("user_token", null);
         currentUserEmail = preferences.getString("user_email", "");
@@ -74,18 +70,17 @@ public class MainActivity extends AppCompatActivity {
             menuLayout.setVisibility(View.GONE);
         }
 
-        // Lấy danh sách xe
+        // Khởi tạo ApiService
+        apiService = ApiClient.getClient().create(ApiService.class);
+
         loadCars();
 
-        // Bắt sự kiện nút login/register
         btnLogin.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, LoginActivity.class)));
         btnRegister.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RegisterActivity.class)));
 
-        // Bắt sự kiện menu dưới
         btnHome.setOnClickListener(v -> recreate());
         btnPostCar.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, PostCarActivity.class)));
         btnAccount.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AccountActivity.class)));
-
         btnMessages.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MessagesActivity.class)));
     }
 
@@ -94,34 +89,20 @@ public class MainActivity extends AppCompatActivity {
         menuLayout.setVisibility(View.VISIBLE);
     }
 
-    private void logoutUser() {
-        SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("user_token");
-        editor.remove("user_email");
-        editor.apply();
-
-        loginLayout.setVisibility(View.VISIBLE);
-        menuLayout.setVisibility(View.GONE);
-        Toast.makeText(MainActivity.this, "Đăng xuất thành công!", Toast.LENGTH_SHORT).show();
-    }
-
     private void loadCars() {
         apiService.getCars().enqueue(new Callback<List<Car>>() {
             @Override
             public void onResponse(Call<List<Car>> call, Response<List<Car>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     carList.clear();
-
-                    // Lọc bài đăng không phải của chính mình
                     for (Car car : response.body()) {
+                        // Lọc bài đăng để loại trừ các bài đăng của chính user nếu cần (ví dụ, nếu không muốn hiển thị bài đăng của user)
                         if (!car.getCreatedBy().equalsIgnoreCase(currentUserEmail)) {
                             carList.add(car);
                         }
                     }
-
-                    // isOwner = false vì đây là màn hình chính, không phải bài đăng của mình
-                    carAdapter = new CarAdapter(carList, apiService, false);
+                    // Khởi tạo adapter mới: constructor sửa đổi chỉ nhận carList và boolean isOwner
+                    carAdapter = new CarAdapter(carList, false);
                     recyclerView.setAdapter(carAdapter);
                 } else {
                     Toast.makeText(MainActivity.this, "Không có xe nào!", Toast.LENGTH_SHORT).show();
@@ -130,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Car>> call, Throwable t) {
-                Log.e("RetrofitError", "Lỗi kết nối chi tiết: ", t); // ghi log stacktrace
                 Toast.makeText(MainActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

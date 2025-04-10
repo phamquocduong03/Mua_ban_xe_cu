@@ -4,136 +4,118 @@ import com.google.gson.annotations.SerializedName;
 
 public class User {
 
+    // Lưu _id từ MongoDB (trường này có thể nhận giá trị từ API)
+    @SerializedName("userId")
+    private String id;
+
+
+    @SerializedName("name")
+    private String name; // Thêm trường name (họ và tên)
+
     private String username;
     private String password;
 
-    @SerializedName("name")
-    private String name;
-    @SerializedName("email") // Ánh xạ với trường "email" trong JSON
+    @SerializedName("email")
     private String email;
 
-    @SerializedName("facebookLink") // Ánh xạ với trường "facebookLink" trong JSON
+    @SerializedName("facebookLink")
     private String facebookLink;
 
-    @SerializedName("dob") // Ánh xạ với trường "dob" trong JSON
+    @SerializedName("dob")
     private String dob;
 
-    @SerializedName("isAdmin") // Ánh xạ với trường "isAdmin" trong JSON
+    @SerializedName("isAdmin")
     private boolean isAdmin;
 
-    @SerializedName("province") // Ánh xạ với trường "province" trong JSON
+    @SerializedName("province")
     private String province;
 
-    @SerializedName("token") // Ánh xạ với trường "token" trong JSON
+    @SerializedName("token")
     private String token;
 
-    @SerializedName("phoneNumber") // Ánh xạ với trường "phoneNumber" trong JSON
+    @SerializedName("phoneNumber")
     private String phoneNumber;
 
-    // Constructor có email
-    public User(String username, String password, String email, String province, String facebookLink, String dob,String phoneNumber, boolean isAdmin) {
+    // Constructor dùng cho đăng nhập (với 9 tham số)
+    public User(String name, String username, String password, String email, String province, String facebookLink, String dob, String phoneNumber, boolean isAdmin) {
+        this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.province = province;
         this.facebookLink = facebookLink;
         this.dob = dob;
-        this.isAdmin = isAdmin;
-        this.province = province;
         this.phoneNumber = phoneNumber;
-
+        this.isAdmin = isAdmin;
     }
 
-    public String getToken() {
-        return token;
+    // Getter và setter cho id
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    // Các getters và setters khác
+    public String getName() {
+        return name;
     }
-
-    // Constructor không có email (dùng khi không cần email ngay lập tức)
-    public User(String username, String password, String province) {
-        this.username = username;
-        this.password = password;
-        this.province = province;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    // Getter và Setter cho tất cả các trường
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getFacebookLink() {
         return facebookLink;
     }
-
     public void setFacebookLink(String facebookLink) {
         this.facebookLink = facebookLink;
     }
-
     public String getDob() {
         return dob;
     }
-
     public void setDob(String dob) {
         this.dob = dob;
     }
-
     public boolean isAdmin() {
         return isAdmin;
     }
-
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
-
-    // Getter và Setter cho phoneNumber
+    public String getProvince() {
+        return province;
+    }
+    public void setProvince(String province) {
+        this.province = province;
+    }
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-    // ToString để log dễ dàng (nếu cần)
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", facebookLink='" + facebookLink + '\'' +
-                ", dob='" + dob + '\'' +
-                ", isAdmin=" + isAdmin +
-                ", province='" + province + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
     }
 }

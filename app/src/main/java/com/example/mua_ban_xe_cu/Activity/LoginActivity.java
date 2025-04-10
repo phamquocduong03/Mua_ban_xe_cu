@@ -38,81 +38,75 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Sử dụng AppConfig để lấy URL máy chủ
+        // Khởi tạo Retrofit
         retrofit = new Retrofit.Builder()
-                .baseUrl(AppConfig.getBaseUrl())  // Sử dụng URL lấy từ AppConfig
+                .baseUrl(AppConfig.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         apiService = retrofit.create(ApiService.class);
 
-        // Khởi tạo các View
+        // Khởi tạo View
         editUsername = findViewById(R.id.editUsername);
         editPassword = findViewById(R.id.editPassword);
         btnLogin = findViewById(R.id.btnLogin);
         linkRegister = findViewById(R.id.linkRegister);
 
-        // Handle login action
+        // Xử lý đăng nhập
         btnLogin.setOnClickListener(v -> {
             String username = editUsername.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
 
-            // Check if username and password are not empty
             if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
                 Toast.makeText(LoginActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Truy vấn MongoDB để lấy người dùng dựa trên username
-            apiService.loginUser(new User(username, password, null, null, null, null,null , false))
-                    .enqueue(new Callback<LoginResponse>() {
-                        @Override
-                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                LoginResponse loginResponse = response.body();
+            // Tạo User chỉ chứa thông tin đăng nhập
+            User loginUser = new User("", username, password, null, null, null, null, null, false);
 
-                                // Lấy thông tin từ phản hồi
-                                String token = loginResponse.getToken();
-                                User user = loginResponse.getUser();
+            apiService.loginUser(loginUser).enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        LoginResponse loginResponse = response.body();
+                        String token = loginResponse.getToken();
+                        User user = loginResponse.getUser();
 
-                                if (user != null) {
-                                    Log.d("LoginActivity", "Token: " + token);
-                                    Log.d("LoginActivity", "User: " + user.toString());
+                        if (user != null) {
+                            Log.d("LoginActivity", "Token: " + token);
+                            Log.d("LoginActivity", "User: " + user.toString());
 
-                                    // Lưu thông tin vào SharedPreferences
-                                    SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = preferences.edit();
-                                    editor.putString("user_token", token);
-                                    editor.putString("user_email", user.getEmail());
-                                    editor.putString("user_username", user.getUsername());
-                                    editor.putString("phoneNumber", user.getPhoneNumber());
-                                    editor.putString("user_province", user.getProvince());
-                                    editor.putString("user_dob", user.getDob());            // Thêm dòng này
-                                    editor.putString("facebookLink", user.getFacebookLink()); // Thêm dòng này
-                                    editor.apply();
+                            // Lưu thông tin vào SharedPreferences
+                            SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("user_token", token);
+                            editor.putString("user_email", user.getEmail());
+                            editor.putString("user_username", user.getUsername());
+                            editor.putString("user_name", user.getName());
+                            editor.putString("phoneNumber", user.getPhoneNumber());
+                            editor.putString("user_province", user.getProvince());
+                            editor.putString("user_dob", user.getDob());
+                            editor.putString("facebookLink", user.getFacebookLink());
+                            editor.apply();
 
-
-                                    // Chuyển đến MainActivity
-                                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
                         }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-                        @Override
-                        public void onFailure(Call<LoginResponse> call, Throwable t) {
-                            Toast.makeText(LoginActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
-        // Navigate to RegisterActivity
+        // Chuyển sang màn hình đăng ký
         linkRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);

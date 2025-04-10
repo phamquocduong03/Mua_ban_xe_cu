@@ -71,6 +71,10 @@ public interface ApiService {
 
     @PUT("car/update_car")
     Call<Car> updateCar(@Body Car car);
+    // Endpoint cập nhật thông tin tài khoản (auth service)
+    @PUT("auth/update_user")
+    Call<User> updateUser(@Body User user);
+
 
 
 }

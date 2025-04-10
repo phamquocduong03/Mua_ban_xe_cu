@@ -15,18 +15,15 @@ import com.example.mua_ban_xe_cu.Activity.CarDetailActivity;
 import com.example.mua_ban_xe_cu.database.Car;
 import com.example.mua_ban_xe_cu.R;
 import com.example.mua_ban_xe_cu.API.AppConfig;
-import com.example.mua_ban_xe_cu.API.ApiService;
 
 import java.util.List;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     private List<Car> carList;
-    private ApiService apiService; // Thêm trường này nếu cần sử dụng trong adapter
-    private boolean isOwner;  // Thêm flag để biết đây là bài đăng của chính người dùng
-    // Constructor nhận List<Car> và ApiService
-    public CarAdapter(List<Car> carList, ApiService apiService, boolean isOwner) {
+    private boolean isOwner;
+
+    public CarAdapter(List<Car> carList, boolean isOwner) {
         this.carList = carList;
-        this.apiService = apiService;
         this.isOwner = isOwner;
     }
 
@@ -48,14 +45,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         holder.carPrice.setText("Giá: " + formattedPrice);
         holder.carProvince.setText("Địa chỉ: " + (car.getProvince() != null ? car.getProvince() : "Không xác định"));
 
-        // Khi nhấn vào 1 xe, chuyển sang CarDetailActivity và truyền thêm flag isOwner nếu là bài đăng của chính người dùng
+        // Khi nhấn vào item, chuyển sang CarDetailActivity và truyền dữ liệu, bao gồm posterName
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
             Intent intent = new Intent(context, CarDetailActivity.class);
             intent.putExtra("name", car.getName());
             intent.putExtra("price", car.getPrice());
             intent.putExtra("imageUrl", car.getImageUrl());
-            intent.putExtra("owner", car.getCreatedBy());
+            intent.putExtra("posterName", car.getPosterName()); // Truyền tên người đăng
             intent.putExtra("address", car.getProvince());
             intent.putExtra("phoneNumber", car.getPhoneNumber());
             intent.putExtra("email", car.getCreatedBy());
@@ -63,20 +60,16 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             intent.putExtra("isOwner", isOwner);
             context.startActivity(intent);
         });
+
         String imageUrl = car.getImageUrl();
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            // Thay thế 'car-service' hoặc 'localhost' với URL bạn đã cấu hình
             String updatedImageUrl = imageUrl.replace("http://localhost:5002/uploads/", AppConfig.getBaseUrl() + "car/uploads/");
-            Glide.with(holder.itemView.getContext())
-                    .load(updatedImageUrl)
-                    .into(holder.imageCar);
+            Glide.with(holder.itemView.getContext()).load(updatedImageUrl).into(holder.imageCar);
         } else {
-            Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.ic_car_placeholder)
-                    .into(holder.imageCar);
+            Glide.with(holder.itemView.getContext()).load(R.drawable.ic_car_placeholder).into(holder.imageCar);
         }
-
     }
+
     @Override
     public int getItemCount() {
         return carList.size();

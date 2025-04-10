@@ -1,38 +1,20 @@
 package com.example.mua_ban_xe_cu.Activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import androidx.appcompat.widget.AppCompatSpinner;
-import android.widget.Toast;
+import android.annotation.SuppressLint; import android.os.Bundle; import android.text.TextUtils; import android.widget.ArrayAdapter; import android.widget.Button; import android.widget.EditText; import androidx.appcompat.widget.AppCompatSpinner; import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mua_ban_xe_cu.API.ApiService;
-import com.example.mua_ban_xe_cu.API.AppConfig;
-import com.example.mua_ban_xe_cu.Model.Province;
-import com.example.mua_ban_xe_cu.Model.Response.RegisterResponse;
-import com.example.mua_ban_xe_cu.R;
-import com.example.mua_ban_xe_cu.database.User;
+import com.example.mua_ban_xe_cu.API.ApiService; import com.example.mua_ban_xe_cu.API.AppConfig; import com.example.mua_ban_xe_cu.Model.Province; import com.example.mua_ban_xe_cu.Model.Response.RegisterResponse; import com.example.mua_ban_xe_cu.R; import com.example.mua_ban_xe_cu.database.User;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import java.lang.reflect.Field; import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Call; import retrofit2.Callback; import retrofit2.Response; import retrofit2.Retrofit; import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
-
-    private EditText editTextUsername, editTextPassword, editTextConfirmPassword, editTextEmail, editTextFacebook;
+    private EditText editTextName, editTextUsername, editTextPassword, editTextConfirmPassword, editTextEmail, editTextFacebook;
+    private EditText editTextPhoneNumber;
     private Button buttonRegister;
     private AppCompatSpinner spinnerProvince; // Sử dụng AppCompatSpinner
-    private EditText editTextPhoneNumber;
 
     private Retrofit retrofit;
     private ApiService apiService;
@@ -45,7 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Khởi tạo các View (đã loại bỏ trường nhập ngày sinh)
+        // Khởi tạo các View (bổ sung thêm trường nhập tên hiển thị)
+        editTextName = findViewById(R.id.editTextName);  // Cần đảm bảo layout có EditText với id này
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
@@ -76,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Thiết lập sự kiện cho nút đăng ký
         buttonRegister.setOnClickListener(v -> {
+            String name = editTextName.getText().toString().trim();
             String username = editTextUsername.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
             String confirmPassword = editTextConfirmPassword.getText().toString().trim();
@@ -84,8 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
             String facebookLink = editTextFacebook.getText().toString().trim();
             String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
-            // Kiểm tra các trường bắt buộc (loại bỏ trường ngày sinh)
-            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password) ||
+            // Kiểm tra các trường bắt buộc (bao gồm cả name)
+            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password) ||
                     TextUtils.isEmpty(confirmPassword) || TextUtils.isEmpty(email) ||
                     TextUtils.isEmpty(phoneNumber)) {
                 Toast.makeText(RegisterActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -98,7 +82,8 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            // Tạo đối tượng User, truyền chuỗi rỗng cho trường dob (ngày sinh)
+            // Tạo đối tượng User. Vì project đã bổ sung trường name, ta khởi tạo theo constructor mới.
+            // (Ở đây, trường dob để trống nếu không sử dụng; nếu có, bạn có thể cập nhật thêm.)
             User newUser = new User(name, username, password, email, province, facebookLink, "", phoneNumber, false);
 
             // Gửi yêu cầu đăng ký
@@ -118,7 +103,6 @@ public class RegisterActivity extends AppCompatActivity {
                     ((android.widget.ListPopupWindow) popup).dismiss();
                 }
             } catch (Exception e) {
-                // Nếu không thành công, in log hoặc bỏ qua
                 e.printStackTrace();
             }
         }
@@ -183,4 +167,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 }

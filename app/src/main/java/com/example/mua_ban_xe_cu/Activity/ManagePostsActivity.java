@@ -22,7 +22,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ManagePostsActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private CarAdapter carAdapter;
     private List<Car> myCars = new ArrayList<>();
@@ -54,7 +53,7 @@ public class ManagePostsActivity extends AppCompatActivity {
                     myCars.clear();
                     for (Car car : allCars) {
                         if (car.getCreatedBy() != null
-                                && car.getCreatedBy().equals(currentUserEmail)
+                                && car.getCreatedBy().equalsIgnoreCase(currentUserEmail)
                                 && "Đã duyệt".equalsIgnoreCase(car.getStatus())) {
                             myCars.add(car);
                         }
@@ -64,7 +63,8 @@ public class ManagePostsActivity extends AppCompatActivity {
                         Toast.makeText(ManagePostsActivity.this, "Bạn chưa có bài đăng nào đang được duyệt!", Toast.LENGTH_SHORT).show();
                     }
 
-                    carAdapter = new CarAdapter(myCars, apiService, true);
+                    // Khởi tạo adapter theo constructor mới chỉ nhận 2 tham số: List<Car> và boolean isOwner
+                    carAdapter = new CarAdapter(myCars, true);
                     recyclerView.setAdapter(carAdapter);
                 } else {
                     Toast.makeText(ManagePostsActivity.this, "Không lấy được bài đăng!", Toast.LENGTH_SHORT).show();
@@ -77,5 +77,4 @@ public class ManagePostsActivity extends AppCompatActivity {
             }
         });
     }
-
 }
