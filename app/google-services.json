@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "465487035611",
+    "project_id": "mua-ban-xe-cu",
+    "storage_bucket": "mua-ban-xe-cu.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465487035611:android:98e928773b9055dce760fe",
+        "android_client_info": {
+          "package_name": "com.example.mua_ban_xe_cu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtWBg1YMhvmAQGfMLNFsxgBYDh9t9pynM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

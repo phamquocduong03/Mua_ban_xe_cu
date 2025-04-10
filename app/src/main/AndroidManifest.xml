@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Quyền truy cập mạng -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Quyền truy cập phương tiện (Android 13 trở lên) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.Mua_ban_xe_cu"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:targetApi="31">
+
+        <!-- Activity chính (launcher) -->
+        <activity
+            android:name=".Activity.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <!-- Các Activity có thể khởi động từ bên ngoài -->
+        <activity android:name=".Activity.LoginActivity" android:exported="true" />
+        <activity android:name=".Activity.RegisterActivity" android:exported="true" />
+        <activity android:name=".Activity.PostCarActivity" android:exported="true" />
+
+        <!-- Các Activity nội bộ, không cần exported -->
+        <activity android:name=".Activity.CarDetailActivity" android:exported="false" />
+        <activity android:name=".Activity.ChatActivity" android:exported="false" />
+        <activity android:name=".Activity.AccountActivity" android:exported="false" />
+        <activity android:name=".Activity.ManagePostsActivity" android:exported="false" />
+        <activity android:name=".Activity.MessagesActivity" android:exported="false" />
+        <activity android:name=".Activity.EditAccountActivity"/>
+        <activity android:name=".Activity.EditCarActivity"/>
+    </application>
+
+</manifest>

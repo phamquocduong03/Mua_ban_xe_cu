@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/editCarName"
+            android:hint="Tên xe" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/editCarPrice"
+            android:hint="Giá" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/editCarYear"
+            android:hint="Năm sản xuất" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/editPhoneNumber"
+            android:hint="SĐT" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/editProvince"
+            android:hint="Tỉnh thành" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <Spinner android:id="@+id/spinnerCarBrand"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <Spinner android:id="@+id/spinnerCarType"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <Button android:id="@+id/btnSaveEdit"
+            android:text="Lưu chỉnh sửa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

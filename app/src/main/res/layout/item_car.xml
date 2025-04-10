@@ -1,0 +1,78 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:padding="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Hình ảnh xe -->
+        <ImageView
+            android:id="@+id/imageCar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_car_placeholder" />
+
+        <!-- Thông tin xe (Tên, Hãng, Năm sản xuất, Địa chỉ) -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/imageCar"
+            android:layout_toRightOf="@id/imageCar"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/textCarName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tên xe: Tên xe được lấy từ server"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textCarBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hãng xe: Dữ liệu được lấy từ server"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/textCarYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Năm sản xuất: Dữ liệu được lấy từ server"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/textCarProvince"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ: Dữ liệu được lấy từ server"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Giá -->
+        <TextView
+            android:id="@+id/textCarPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Giá: Dữ liệu được lấy từ server"
+            android:textSize="20sp"
+            android:textColor="#FF5722"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

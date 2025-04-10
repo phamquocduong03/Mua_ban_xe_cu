@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imageCar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/textCarName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên xe"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textCarPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giá bán"
+        android:textSize="18sp"
+        android:textColor="#FF5722"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textCarOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Người đăng"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textCarAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textCarPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số điện thoại"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textCarEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Nút nhắn tin -->
+    <Button
+        android:id="@+id/buttonMessageSeller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nhắn tin với người bán"
+        android:backgroundTint="#03A9F4"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp" />
+
+    <!-- Nút "Chỉnh sửa bài đăng" (chỉ hiển thị khi là bài đăng của chính mình) -->
+    <Button
+        android:id="@+id/btnEditPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chỉnh sửa bài đăng"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
+    <!-- Nút "Xóa bài đăng" (chỉ hiển thị khi là bài đăng của chính mình) -->
+    <Button
+        android:id="@+id/btnDeletePost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Xóa bài đăng"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#F44336"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
+</LinearLayout>
